@@ -6,10 +6,6 @@ import { useEffect, useState } from 'react';
 import InputCard from '@/components/InputCard';
 import { ReduxProvider } from '@/redux/provider';
 
-export const metadata = {
-  title: 'Broker Diary',
-  description: 'Broker Diary',
-}
 
 export default function RootLayout({ children }) {
 
