@@ -141,13 +141,16 @@ const Card = ({ formData }) => {
             const updatedPaymentRemarks = [...values.paymentRemarks];
             const paidAmount = Number(updatedPaymentRemarks[ind].PaidAmount);
             const newPendingAmount = Number(values.pendingAmount) + paidAmount;
+            console.log(paidAmount + "--" + newPendingAmount);
             updatedPaymentRemarks.splice(ind, 1);
 
             try {
                 setIsLoading(true);
                 handleChange([
                     { name: "paymentRemarks", value: updatedPaymentRemarks },
-                    { name: "pendingAmount", value: newPendingAmount.toFixed(2) }
+                    { name: "pendingAmount", value: newPendingAmount.toFixed(2) },
+                    { name: "fullpaymentDone", value: false },
+                    { name: "brokerpaymentDone", value: false }
                 ]);
 
                 const updatedData = {
@@ -165,6 +168,7 @@ const Card = ({ formData }) => {
                 if (data?.status === 200 && data?.data?.message) {
                     alert(data?.data?.message);
                     dispatch(logIn(data?.data?.user));
+                    CancelEdit();
                 } else {
                     alert(data?.data?.error);
                 }
