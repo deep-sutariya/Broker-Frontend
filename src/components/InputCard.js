@@ -41,6 +41,7 @@ const InputCard = ({ setInputCard }) => {
 
     const SaveEdit = async () => {
         const validationResponse = CheckCardInput(values);
+        console.log(user);
         if (user && Object.keys(user).length>0 && validationResponse === "Success") {
 
             const updatedCard = {
@@ -68,7 +69,7 @@ const InputCard = ({ setInputCard }) => {
                 setIsLoading(false);
             }
         }
-        else{
+        else if(!user){
             alert("Login first");
         }
     }
