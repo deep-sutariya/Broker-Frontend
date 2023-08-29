@@ -92,7 +92,7 @@ const Card = ({ formData }) => {
 
             val.push({ Date: values.paidDate, PaidAmount: values.paidAmount, fullpaymentDone: false })
             if (values.fullpaymentDone) {
-                val.push({ Date: values.paidDate, PaidAmount: toString(npa.toFixed(2)), fullpaymentDone: true })
+                val.push({ Date: values.paidDate, PaidAmount: npa.toFixed(2), fullpaymentDone: true })
             }
         }
         else if (values.fullpaymentDone && values.pendingAmount > 0) {
