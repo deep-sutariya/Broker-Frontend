@@ -1,4 +1,5 @@
 "use client"
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { logIn } from "@/redux/features/authSlice";
 import { EmailValidator } from "@/utils/Validation";
 import useForm from "@/utils/useForm";
@@ -17,23 +18,30 @@ const page = () => {
         password: '',
     })
     const [ErrorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         const { email } = values;
 
         if (EmailValidator(email)) {
-            const data = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/login`, values);
-            if (data?.data?.user && data?.data?.token) {
-                localStorage.setItem("LOGIN_TOKEN", data?.data?.token);
-                setErrorMessage("");
-
-                dispach(logIn(data?.data?.user));
-                router.push("/");
-                alert(data?.data?.message);
-            }
-            else {
-                setErrorMessage(data?.data?.error);
+            setIsLoading(true);
+            try {
+                const data = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/login`, values);
+                if (data?.data?.user && data?.data?.token) {
+                    localStorage.setItem("LOGIN_TOKEN", data?.data?.token);
+                    setErrorMessage("");
+                    dispach(logIn(data?.data?.user));
+                    router.push("/");
+                    alert(data?.data?.message);
+                } else {
+                    setErrorMessage(data?.data?.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                setErrorMessage("An error occurred during login.");
+            } finally {
+                setIsLoading(false);
             }
         }
         else {
@@ -55,7 +63,18 @@ const page = () => {
                     </div>
                     <div>
                         <p className="text-red-700 font-heading block font-semibold mb-2">{ErrorMessage}</p>
-                        <button type="submit" className="px-4 text-lg font-heading py-2 w-full transition ease-in-out duration-300 border border-1 border-brown hover:bg-brown">Login</button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 text-lg font-semibold transition duration-300 border border-brown bg-brown text-white hover:bg-brown-dark"
+                            style={{ width: "100%", borderRadius: "0.375rem" }}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <LoadingSpinner />
+                            ) : (
+                                "Login"
+                            )}
+                        </button>
                     </div>
                 </form>
             </div>

@@ -5,6 +5,7 @@ import { useState } from "react"
 
 import axios from 'axios';
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/components/LoadingSpinner";
 require('dotenv').config();
 
 const page = () => {
@@ -18,25 +19,33 @@ const page = () => {
     })
 
     const [ErrorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const { fullname, email, password, cpassword } = values;
 
         if (EmailValidator(email)) {
             if (PasswordValidator(password, cpassword)) {
-                const data = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/signup`, {
-                    name: fullname,
-                    email: email,
-                    password: password
-                });
-                if(data?.data?.message){
-                    setErrorMessage("");
-                    alert(data?.data?.message);
-                    router.push("/login");
-                }
-                else{
-                    setErrorMessage(data?.data?.error);
+                setIsLoading(true);
+                try {
+                    const data = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/signup`, {
+                        name: fullname,
+                        email: email,
+                        password: password
+                    });
+                    if (data?.data?.message) {
+                        setErrorMessage("");
+                        alert(data?.data?.message);
+                        router.push("/login");
+                    }
+                    else {
+                        setErrorMessage(data?.data?.error);
+                    }
+                } catch (e) {
+                    setErrorMessage("Server Error");
+                } finally {
+                    setIsLoading(false);
                 }
             }
             else {
@@ -79,7 +88,13 @@ const page = () => {
                     </div>
                     <div>
                         <p className=" text-red-700 text-sm sm:text-base font-heading block font-semibold mb-2">{ErrorMessage}</p>
-                        <button type="submit" className="px-4 text-lg font-heading py-2 w-full transition ease-in-out duration-300 border border-1 border-brown hover:bg-brown">Signup</button>
+                        <button type="submit" className="px-4 text-lg font-heading py-2 w-full transition ease-in-out duration-300 border border-1 border-brown hover:bg-brown">
+                            {isLoading ? (
+                                <LoadingSpinner />
+                            ) : (
+                                "Signup"
+                            )}
+                        </button>
                     </div>
                 </form>
             </div>

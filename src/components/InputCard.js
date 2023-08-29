@@ -4,14 +4,17 @@ import { logIn } from "@/redux/features/authSlice";
 import { CheckCardInput } from "@/utils/Validation";
 import useUpdate from "@/utils/useUpdate";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaTimes } from 'react-icons/fa';
 import { useDispatch, useSelector } from "react-redux";
+import LoadingSpinner from "./LoadingSpinner";
 
 const InputCard = ({ setInputCard }) => {
 
     const user = useSelector((state) => state.authReducer);
     const dispatch = useDispatch();
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const { values, handleChange } = useUpdate({
         seller: "",
@@ -39,28 +42,30 @@ const InputCard = ({ setInputCard }) => {
     const SaveEdit = async () => {
         const validationResponse = CheckCardInput(values);
         if (user.cards && validationResponse === "Success") {
-            
+
             const updatedCard = {
                 ...values,
                 pendingAmount: values.totalAmount,
             };
 
-            console.log("Focus-->",updatedCard);
+            setIsLoading(true);
             try {
                 const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/addcard`, {
                     user_id: user._id,
                     values: updatedCard
                 });
-                
+
                 if (response?.status === 200 && response?.data?.message) {
                     alert(response?.data?.message);
-                    dispatch(logIn({...user, cards: [updatedCard,...user.cards]}));
+                    dispatch(logIn({ ...user, cards: [updatedCard, ...user.cards] }));
                     setInputCard(false);
                 } else {
                     alert(response?.data?.error);
                 }
             } catch (error) {
                 alert("Error Accured Contact Developer");
+            } finally {
+                setIsLoading(false);
             }
         }
     }
@@ -318,7 +323,13 @@ const InputCard = ({ setInputCard }) => {
                 </div>
 
                 <div className="m-2 mt-6 sm:mt-4 flex gap-x-3 sm:gap-x-6 cursor-pointer sm:w-1/2">
-                    <div className="px-1 py-1 md:py-2 sm:px-2 rounded-lg text-common text-base sm:text-xl tracking-wider text-center bg-blue w-full" onClick={SaveEdit}>Save</div>
+                    <div className="px-1 py-1 md:py-2 sm:px-2 rounded-lg text-common text-base sm:text-xl tracking-wider text-center bg-blue w-full" onClick={SaveEdit}>
+                        {isLoading ? (
+                            <LoadingSpinner />
+                        ) : (
+                            "Save"
+                        )}
+                    </div>
                     <div className="px-1 py-1 md:py-2 sm:px-2 rounded-lg text-common text-base sm:text-xl tracking-wider text-center bg-blue w-full" onClick={() => setInputCard(false)}>Cancel</div>
                 </div>
             </div>

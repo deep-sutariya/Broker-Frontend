@@ -8,13 +8,11 @@ export const cards = createSlice({
     reducers: {
         AddCard: (state, action) => {
             const updatedCards = [...action.payload.cards, action.payload.values];
-            console.log("AuthSlice-->",updatedCards);
             return updatedCards;
         },
 
         UpdateCard: (state, action) => {
             const cardInfo = action.payload;
-            console.log(cards);
             return cardInfo;
         }
     }

@@ -18,7 +18,6 @@ export const auth = createSlice({
 
         RemoveCard: (state, action) => {
             state.cards.splice(action.payload.index, 1);
-            console.log("From slice",state.cards);
         }
     }
 })
