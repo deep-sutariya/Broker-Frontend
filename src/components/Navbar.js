@@ -12,6 +12,7 @@ const Navbar = () => {
   const dispach = useDispatch();
   const logout = () => {
     if(confirm("Are you sure about log out?")){
+      localStorage.removeItem("LOGIN_TOKEN");
       dispach(logOut());
     }
   }
