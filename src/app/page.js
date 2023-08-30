@@ -131,9 +131,9 @@ export default function Home() {
         }
       </div>
 
-      <div className="grid gap-y-4 md:gap-y-8 w-[85%] mx-auto mb-10 sm:mb-20">
+      <div className="grid gap-y-4 md:gap-y-8 w-[90%] sm:w-[85%] mx-auto mb-10 sm:mb-20">
         {isLoading ? (
-          <LoadingSpinner />
+          <LoadingSpinner color="brown" />
         )
           :
           (sortedCards && sortedCards.length > 0 && (

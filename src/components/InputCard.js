@@ -67,10 +67,11 @@ const InputCard = ({ setInputCard }) => {
                 setIsLoading(false);
             }
         }
-        else if(!user){
+        else if(Object.keys(user).length==0){
             alert("Login first");
         }
         else{
+            if(validationResponse!=="Success")
             alert(validationResponse);
         }
     }
@@ -330,7 +331,7 @@ const InputCard = ({ setInputCard }) => {
                 <div className="m-2 mt-6 sm:mt-4 flex gap-x-3 sm:gap-x-6 cursor-pointer sm:w-1/2">
                     <div className="px-1 py-1 md:py-2 sm:px-2 rounded-lg text-common text-base sm:text-xl tracking-wider text-center bg-blue w-full" onClick={SaveEdit}>
                         {isLoading ? (
-                            <LoadingSpinner />
+                            <LoadingSpinner color="common" />
                         ) : (
                             "Save"
                         )}

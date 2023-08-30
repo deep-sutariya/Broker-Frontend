@@ -88,9 +88,9 @@ const page = () => {
                     </div>
                     <div>
                         <p className=" text-red-700 text-sm sm:text-base font-heading block font-semibold mb-2">{ErrorMessage}</p>
-                        <button type="submit" className="px-4 text-lg font-heading py-2 w-full transition ease-in-out duration-300 border border-1 border-brown hover:bg-brown">
+                        <button type="submit" className="px-4 text-lg font-heading py-2 w-full transition rounded-lg ease-in-out duration-300 border border-1 border-brown hover:bg-brown">
                             {isLoading ? (
-                                <LoadingSpinner />
+                                <LoadingSpinner color="common" />
                             ) : (
                                 "Signup"
                             )}

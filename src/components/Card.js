@@ -103,14 +103,14 @@ const Card = ({ formData }) => {
             setIsLoading(true);
             handleChange([
                 { name: "paymentRemarks", value: val },
-                { name: "pendingAmount", value: values.fullpaymentDone ? 0 : npa ? npa.toFixed(2) : 0 },
+                { name: "pendingAmount", value: values.fullpaymentDone ? 0 : npa!==undefined ? npa.toFixed(2) : values.pendingAmount },
                 { name: "paidAmount", value: "" }
             ]);
 
             const updatedData = {
                 ...values,
                 paymentRemarks: val,
-                pendingAmount: values.fullpaymentDone ? 0 : npa ? npa.toFixed(2) : 0,
+                pendingAmount: values.fullpaymentDone===true ? 0 : npa!==undefined ? npa.toFixed(2) : values.pendingAmount,
                 paidAmount: ""
             };
 
@@ -141,7 +141,6 @@ const Card = ({ formData }) => {
             const updatedPaymentRemarks = [...values.paymentRemarks];
             const paidAmount = Number(updatedPaymentRemarks[ind].PaidAmount);
             const newPendingAmount = Number(values.pendingAmount) + paidAmount;
-            console.log(paidAmount + "--" + newPendingAmount);
             updatedPaymentRemarks.splice(ind, 1);
 
             try {
@@ -156,7 +155,9 @@ const Card = ({ formData }) => {
                 const updatedData = {
                     ...values,
                     paymentRemarks: updatedPaymentRemarks,
-                    pendingAmount: newPendingAmount.toFixed(2)
+                    pendingAmount: newPendingAmount.toFixed(2),
+                    fullpaymentDone : false,
+                    brokerpaymentDone: false
                 };
 
                 const data = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/updatecard`, {
@@ -610,7 +611,7 @@ const Card = ({ formData }) => {
                         <div className="m-2 mt-4 flex gap-x-3 sm:gap-x-6 cursor-pointer sm:w-1/2">
                             <div className="px-1 py-2 sm:px-2 rounded-lg text-common text-base sm:text-xl tracking-wider text-center bg-blue w-full" onClick={SaveEdit}>
                                 {isLoading ? (
-                                    <LoadingSpinner />
+                                    <LoadingSpinner color="common" />
                                 ) : (
                                     "Save"
                                 )}

@@ -6,8 +6,8 @@ export const PasswordValidator = (password,cpassword) => {
     return password === cpassword;
 }
 export const CheckCardInput = ({seller,buyer,sellingDate,dueDate,dueDay,weight,outPercentage,outWeight,netWeight,price,lessPercentage,totalAmount,brokerage,brokerageAmt}) =>{
-    if(seller.trim().length < 2) return "Seller Name minimum 2 character long";
-    if(buyer.trim().length < 2) return "Seller Name minimum 2 character long";
+    if(seller.trim().length < 2) return "Seller Name should be minimum 2 character long";
+    if(buyer.trim().length < 2) return "Buyer Name should be minimum 2 minimum 2 character long";
     if(sellingDate.length!=10) return "Enter Selling Date";
     if(dueDate.length!=10) return "Enter due Date";
     if(weight<=0) return "Enter Weight";
