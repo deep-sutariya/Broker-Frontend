@@ -9,7 +9,7 @@ import { FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
 import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "./LoadingSpinner";
 
-const Card = ({ formData }) => {
+const Card = ({ id, formData }) => {
 
     const user = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
@@ -103,14 +103,14 @@ const Card = ({ formData }) => {
             setIsLoading(true);
             handleChange([
                 { name: "paymentRemarks", value: val },
-                { name: "pendingAmount", value: values.fullpaymentDone ? 0 : npa!==undefined ? npa.toFixed(2) : values.pendingAmount },
+                { name: "pendingAmount", value: values.fullpaymentDone ? 0 : npa !== undefined ? npa.toFixed(2) : values.pendingAmount },
                 { name: "paidAmount", value: "" }
             ]);
 
             const updatedData = {
                 ...values,
                 paymentRemarks: val,
-                pendingAmount: values.fullpaymentDone===true ? 0 : npa!==undefined ? npa.toFixed(2) : values.pendingAmount,
+                pendingAmount: values.fullpaymentDone === true ? 0 : npa !== undefined ? npa.toFixed(2) : values.pendingAmount,
                 paidAmount: ""
             };
 
@@ -156,7 +156,7 @@ const Card = ({ formData }) => {
                     ...values,
                     paymentRemarks: updatedPaymentRemarks,
                     pendingAmount: newPendingAmount.toFixed(2),
-                    fullpaymentDone : false,
+                    fullpaymentDone: false,
                     brokerpaymentDone: false
                 };
 
@@ -238,8 +238,18 @@ const Card = ({ formData }) => {
     return (
         <div>
             <div className={`rounded-t-lg flex flex-col border-t-4 ${formData.fullpaymentDone === true && formData.brokerpaymentDone === true ? `border-green-500` : formData.fullpaymentDone === true && formData.brokerpaymentDone === false ? `border-purple-500` : `border-red-500`}`}></div>
-
             <div className="rounded-b-lg bg-common shadow-md py-2 px-2 md:py-3 md:px-4">
+                <div className="m-2 flex justify-between gap-x-10">
+                    <div className="text-xs sm:text-base">({id})</div>
+                    <div className="cursor-pointer" >
+                        {
+                            ViewEdit ?
+                                <FaTimes className="w-4 h-4 md:w-5 md:h-5 opacity-60" onClick={CancelEdit} />
+                                :
+                                <FaEdit className="w-4 h-4 md:w-5 md:h-5 opacity-60" onClick={openEdit} />
+                        }
+                    </div>
+                </div>
                 <div className="m-2 flex justify-between gap-x-10">
                     <div className="flex flex-col justify-between gap-y-2 w-full">
                         <div className="flex gap-x-1 sm:gap-x-2 items-center">
@@ -284,14 +294,7 @@ const Card = ({ formData }) => {
                                 : <></>
                         }
                     </div>
-                    <div className="cursor-pointer" >
-                        {
-                            ViewEdit ?
-                                <FaTimes className="w-4 h-4 md:w-5 md:h-5 opacity-60" onClick={CancelEdit} />
-                                :
-                                <FaEdit className="w-4 h-4 md:w-5 md:h-5 opacity-60" onClick={openEdit} />
-                        }
-                    </div>
+
                 </div>
 
                 <div className="m-2 flex justify-between border-t-2 border-brown pt-2 sm:pt-3 gap-x-1 md:gap-x-5 lg:gap-x-10">

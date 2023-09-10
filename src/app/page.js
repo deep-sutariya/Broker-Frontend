@@ -15,15 +15,17 @@ export default function Home() {
   const user = useSelector((state) => state.authReducer);
   const dispach = useDispatch();
 
-  let date = new Date();
-  let month = date.getMonth();
-  const [selectedMonth, setSelectedMonth] = useState(month);
-  const [selectedMessage, setSelectedMessage] = useState("");
-
   const [sortOption, setSortOption] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
   const [monthlyBrokrage, setMonthlyBrokrage] = useState(0);
 
+  const [selectedMonth, setSelectedMonth] = useState();
+  const [selectedMessage, setSelectedMessage] = useState("");
+  
+  useEffect(()=>{
+    setSelectedMonth(new Date().getMonth());
+  },[new Date().getMonth()])
+  
   const sortedCards = useMemo(() => {
     let sortedCards;
     if (user && user.cards && user.cards.length > 0) {
@@ -144,7 +146,7 @@ export default function Home() {
                 return viewOption === "all" || cardMonth === selectedMonth;
               })
               .map((item, ind) => (
-                <Card key={ind} formData={item} />
+                <Card id={ind} key={ind} formData={item} />
               ))
           ))
 
