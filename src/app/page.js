@@ -21,11 +21,11 @@ export default function Home() {
 
   const [selectedMonth, setSelectedMonth] = useState();
   const [selectedMessage, setSelectedMessage] = useState("");
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     setSelectedMonth(new Date().getMonth());
-  },[new Date().getMonth()])
-  
+  }, [new Date().getMonth()])
+
   const sortedCards = useMemo(() => {
     let sortedCards;
     if (user && user.cards && user.cards.length > 0) {
@@ -59,12 +59,22 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (user && user.cards && user.cards.length > 0 && areCardsAvailableForMonth(user.cards, selectedMonth) === false) {
-      setSelectedMessage("No cards available.");
-    } else {
-      setSelectedMessage("");
+    if(user && user._id){
+      if(user.cards && user.cards.length>0){
+        if(areCardsAvailableForMonth(user.cards, selectedMonth) === true){
+          setSelectedMessage("");
+        }
+        else
+          setSelectedMessage("No cards available.");
+      }
+      else 
+        setSelectedMessage("Add Cards.");
     }
-  }, [user.cards, selectedMonth]);
+    else{
+      setSelectedMessage("You have to Login First.");
+    }
+
+  }, [user, selectedMonth]);
 
   const getUserInfo = async (token) => {
     setIsLoading(true);
@@ -152,7 +162,7 @@ export default function Home() {
 
         }
         {
-          viewOption === 'month' && sortedCards && sortedCards.length > 0 && selectedMessage.length > 0 && <p className="text-center text-gray-600">{selectedMessage}</p>
+          viewOption === 'month' && <p className="text-center text-gray-600">{selectedMessage}</p>
         }
         {
           viewOption === 'all' && sortedCards && sortedCards.length === 0 && (

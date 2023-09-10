@@ -28,7 +28,7 @@ const Navbar = () => {
 
       <div className="flex flex-row justify-between items-center">
         {
-          user.name && Object.keys(user).length > 0 ?
+          user && Object.keys(user).length > 0 && user.name ?
 
             <div className="flex gap-x-4 md:gap-x-6 lg:gap-x-8 items-center" >
               <div className="flex hover:scale-110 duration-150 gap-x-1 md:gap-x-2 items-center justify-center cursor-pointer ">
