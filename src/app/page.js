@@ -156,7 +156,7 @@ export default function Home() {
                 return viewOption === "all" || cardMonth === selectedMonth;
               })
               .map((item, ind) => (
-                <Card key={ind} formData={item} />
+                <Card key={ind} counter={item.counter} formData={item} />
               ))
           ))
 

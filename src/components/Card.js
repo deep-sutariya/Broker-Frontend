@@ -9,14 +9,12 @@ import { FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
 import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "./LoadingSpinner";
 
-const Card = ({ formData }) => {
-
+const Card = ({ counter, formData }) => {
     const user = useSelector(state => state.authReducer);
     const dispatch = useDispatch();
 
     const [ViewEdit, setViewEdit] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
 
     const { values, handleChange } = useUpdate({
         seller: formData.seller,
@@ -240,7 +238,7 @@ const Card = ({ formData }) => {
             <div className={`rounded-t-lg flex flex-col border-t-4 ${formData.fullpaymentDone === true && formData.brokerpaymentDone === true ? `border-green-500` : formData.fullpaymentDone === true && formData.brokerpaymentDone === false ? `border-purple-500` : `border-red-500`}`}></div>
             <div className="rounded-b-lg bg-common shadow-md py-2 px-2 md:py-3 md:px-4">
                 <div className="m-2 flex justify-between gap-x-10">
-                    <div className="text-xs sm:text-base">({formData.counter})</div>
+                    <div className="text-xs sm:text-base">({counter})</div>
                     <div className="cursor-pointer" >
                         {
                             ViewEdit ?
