@@ -37,6 +37,7 @@ const InputCard = ({ setInputCard }) => {
         paymentRemarks: [],
         fullpaymentDone: false,
         brokerpaymentDone: false,
+        counter: 0,
     });
 
     const SaveEdit = async () => {
@@ -55,9 +56,10 @@ const InputCard = ({ setInputCard }) => {
                     values: updatedCard
                 });
 
-                if (response?.status === 200 && response?.data?.message) {
+                if (response?.status === 200 && response?.data?.message && response?.data?.counter) {
                     alert(response?.data?.message);
-                    dispatch(logIn({ ...user, cards: [updatedCard, ...user.cards] }));
+                    const newCard = {...updatedCard, counter:response?.data?.counter}
+                    dispatch(logIn({ ...user, cards: [newCard, ...user.cards] }));
                     setInputCard(false);
                 } else {
                     alert(response?.data?.error);
