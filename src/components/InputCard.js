@@ -51,6 +51,7 @@ const InputCard = ({ setInputCard }) => {
             try {
                 const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/addcard`, {
                     user_id: user._id,
+                    email: user.email,
                     values: updatedCard
                 });
 
