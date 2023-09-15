@@ -16,6 +16,7 @@ const SortButtonWrapper = ({ sortOption, setSortOption, sortOrder, setSortOrder 
                 onChange={(e) => handleSortChange(e.target.value)}
                 className="bg-white border border-gray-300 rounded-lg px-1 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm focus:outline-none"
             >
+                <option value="id" className='text-xs sm:text-sm p-0'>Sort by Id</option>
                 <option value="date" className='text-xs sm:text-sm p-0'>Sort by Date</option>
                 <option value="fullpaid" className='text-xs sm:text-sm'>Full Paid</option>
                 <option value="brokerage" className='text-xs sm:text-sm'>Brokerage Unpaid</option>

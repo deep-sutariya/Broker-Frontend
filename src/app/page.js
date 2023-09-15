@@ -15,7 +15,7 @@ export default function Home() {
   const user = useSelector((state) => state.authReducer);
   const dispach = useDispatch();
 
-  const [sortOption, setSortOption] = useState("date");
+  const [sortOption, setSortOption] = useState("id");
   const [sortOrder, setSortOrder] = useState("desc");
   const [monthlyBrokrage, setMonthlyBrokrage] = useState(0);
 
@@ -32,6 +32,8 @@ export default function Home() {
       sortedCards = [...user.cards];
       sortedCards.sort((a, b) => {
         switch (sortOption) {
+          case 'id':
+            return sortOrder === 'asc' ? a.counter - b.counter : b.counter - a.counter;
           case 'date':
             return sortOrder === 'asc' ? new Date(a.sellingDate) - new Date(b.sellingDate) : new Date(b.sellingDate) - new Date(a.sellingDate);
           case 'pendingAmount':
