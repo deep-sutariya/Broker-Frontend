@@ -24,7 +24,7 @@ input:-webkit-autofill:active {
 }
 
 .blurry{
-  filter: blur(4px);
+  filter: blur(5px);
 }
 
 body::-webkit-scrollbar{

@@ -15,6 +15,9 @@ const InputCard = ({ setInputCard }) => {
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
+    const [dollars, setDollars] = useState(false);
+    const [dollarsAmt, setDollarsAmt] = useState("");
+    const [rate, setRate] = useState("");
 
     const { values, handleChange } = useUpdate({
         seller: "",
@@ -40,9 +43,13 @@ const InputCard = ({ setInputCard }) => {
         counter: 0,
     });
 
+    const checkBoxHandler = () => {
+        setDollars(document.getElementById("dollarpaymentcheckbox").checked);
+    }
+
     const SaveEdit = async () => {
         const validationResponse = CheckCardInput(values);
-        if (user && Object.keys(user).length>0 && validationResponse === "Success") {
+        if (user && Object.keys(user).length > 0 && validationResponse === "Success") {
             const updatedCard = {
                 ...values,
                 pendingAmount: values.totalAmount,
@@ -58,7 +65,7 @@ const InputCard = ({ setInputCard }) => {
 
                 if (response?.status === 200 && response?.data?.message && response?.data?.counter) {
                     alert(response?.data?.message);
-                    const newCard = {...updatedCard, counter:response?.data?.counter}
+                    const newCard = { ...updatedCard, counter: response?.data?.counter }
                     dispatch(logIn({ ...user, cards: [newCard, ...user.cards] }));
                     setInputCard(false);
                 } else {
@@ -70,12 +77,12 @@ const InputCard = ({ setInputCard }) => {
                 setIsLoading(false);
             }
         }
-        else if(Object.keys(user).length==0){
+        else if (Object.keys(user).length == 0) {
             alert("Login first");
         }
-        else{
-            if(validationResponse!=="Success")
-            alert(validationResponse);
+        else {
+            if (validationResponse !== "Success")
+                alert(validationResponse);
         }
     }
 
@@ -108,6 +115,19 @@ const InputCard = ({ setInputCard }) => {
             handleChange([{ name: "totalAmount", value: "" }]);
         }
     }, [values.price, values.lessPercentage, values.netWeight])
+
+    useEffect(()=>{
+        if(dollars){
+            let dollartorupee = dollarsAmt*rate;
+            handleChange([{ name: "price", value: parseFloat(dollartorupee.toFixed(2)) }]);
+        }
+    }, [dollarsAmt,rate])
+
+    useEffect(()=>{
+        handleChange([{ name: "price", value: "" }]);
+        setDollarsAmt("");
+        setRate("");
+    }, [dollars])
 
     useEffect(() => {
         if (values.totalAmount > 0 && values.brokerage > 0) {
@@ -236,9 +256,23 @@ const InputCard = ({ setInputCard }) => {
                     </div>
                 </div>
 
+
                 <div className="sm:m-2 border-t-2 border-brown pt-3 flex flex-col gap-y-2">
+                    <div className="flex gap-x-2 items-center">
+                        <input
+                            className="px-3 py-1 rounded-md focus:outline-none"
+                            id="dollarpaymentcheckbox"
+                            type="checkbox"
+                            name="dollarpaymentcheckbox"
+                            value={dollars}
+                            checked={dollars}
+                            onChange={checkBoxHandler}
+                        />
+                        <h1 className="text-gray-600 text-xs sm:text-base">Payment in Dollars</h1>
+                    </div>
+
                     <div className="flex flex-row gap-x-1 md:gap-x-5 lg:gap-x-10 mb-1">
-                        <div className="flex flex-col lg:flex-row w-1/3 text-center gap-x-2 items-center">
+                        <div className={`flex flex-col lg:flex-row w-1/3 text-center gap-x-2 items-center`}>
                             <h1 className="text-gray-600 text-xs sm:text-base">Net Weight:</h1>
                             <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
                                 <input
@@ -252,23 +286,24 @@ const InputCard = ({ setInputCard }) => {
                                 <h1 className="text-gray-600 text-xs sm:text-base">kg</h1>
                             </div>
                         </div>
-                        <div className="flex flex-col lg:flex-row w-1/3 text-center gap-x-2 items-center">
-                            <h1 className="text-gray-600 text-xs sm:text-base">Price:</h1>
-                            <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
-                                <input
-                                    className="text-xs sm:text-base px-2 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
-                                    type="number"
-                                    name="price"
-                                    value={values.price}
-                                    onChange={handleChange}
-                                    max={100}
-                                    min={0}
-                                    placeholder="Price"
-                                />
-                                <h1 className="text-gray-600 text-xs sm:text-base">₹</h1>
+                        {
+                            !dollars &&
+                            <div className="flex flex-col lg:flex-row w-1/3 text-center gap-x-2 items-center">
+                                <h1 className="text-gray-600 text-xs sm:text-base">Price:</h1>
+                                <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
+                                    <input
+                                        className="text-xs sm:text-base px-2 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
+                                        type="number"
+                                        name="price"
+                                        value={values.price}
+                                        onChange={handleChange}
+                                        placeholder="Price"
+                                    />
+                                    <h1 className="text-gray-600 text-xs sm:text-base">₹</h1>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex flex-col lg:flex-row w-1/3 gap-x-2 items-center">
+                        }
+                        <div className={`flex flex-col lg:flex-row w-1/3 text-center gap-x-2 items-center`}>
                             <h1 className="text-gray-600 text-xs sm:text-base">Less(%):</h1>
                             <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
                                 <input
@@ -283,6 +318,55 @@ const InputCard = ({ setInputCard }) => {
                             </div>
                         </div>
                     </div>
+
+                    {
+                        dollars &&
+                        <div className="flex flex-row gap-x-1 md:gap-x-5 lg:gap-x-10 mb-1">
+                            <div className="flex flex-col lg:flex-row w-1/3 text-center gap-x-2 items-center">
+                                <h1 className="text-gray-600 text-xs sm:text-base">Dollars:</h1>
+                                <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
+                                    <input
+                                        className="text-xs sm:text-base px-2 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
+                                        type="number"
+                                        name="Dollars"
+                                        value={dollarsAmt}
+                                        onChange={(e) => setDollarsAmt(e.target.value)}
+                                        placeholder="Dollars"
+                                    />
+                                    <h1 className="text-gray-600 text-xs sm:text-base">$</h1>
+                                </div>
+                            </div>
+                            <div className="flex flex-col lg:flex-row w-1/3 text-center gap-x-2 items-center">
+                                <h1 className="text-gray-600 text-xs sm:text-base">Rate:</h1>
+                                <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
+                                    <input
+                                        className="text-xs sm:text-base px-2 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
+                                        type="number"
+                                        name="Rate"
+                                        value={rate}
+                                        onChange={(e) => setRate(e.target.value)}
+                                        placeholder="Rupees"
+                                    />
+                                    <h1 className="text-gray-600 text-xs sm:text-base">₹</h1>
+                                </div>
+                            </div>
+                            <div className="flex flex-col lg:flex-row w-1/3 text-center gap-x-2 items-center">
+                                <h1 className="text-gray-600 text-xs sm:text-base">Price:</h1>
+                                <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
+                                    <input
+                                        className="text-xs sm:text-base px-2 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
+                                        type="number"
+                                        name="price"
+                                        value={values.price}
+                                        onChange={handleChange}
+                                        disabled
+                                    />
+                                    <h1 className="text-gray-600 text-xs sm:text-base">₹</h1>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
                     <div className="flex flex-row gap-x-1 md:gap-x-5 lg:gap-x-10 mb-1">
                         <div className="flex flex-col lg:flex-row w-1/3 gap-x-2 items-center">
                             <h1 className="text-gray-600 text-xs hidden sm:block sm:text-base">Total Amount:</h1>

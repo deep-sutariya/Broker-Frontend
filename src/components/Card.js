@@ -16,6 +16,11 @@ const Card = ({ formData }) => {
     const [ViewEdit, setViewEdit] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+
+    const [dollars, setDollars] = useState(false);
+    const [dollarsAmt, setDollarsAmt] = useState("");
+    const [rate, setRate] = useState("");
+
     const { values, handleChange } = useUpdate({
         seller: formData.seller,
         buyer: formData.buyer,
@@ -37,6 +42,7 @@ const Card = ({ formData }) => {
         paymentRemarks: formData.paymentRemarks,
         fullpaymentDone: formData.fullpaymentDone,
         brokerpaymentDone: formData.brokerpaymentDone,
+        counter: formData.counter,
     });
 
     const initializeState = () => {
@@ -85,7 +91,7 @@ const Card = ({ formData }) => {
         }
 
         let npa, val = [...values.paymentRemarks];
-        if (values.pendingAmount > 0 && values.paidAmount > 0 && values.pendingAmount >= values.paidAmount && values.paidDate) {
+        if (values.pendingAmount > 0 && values.paidAmount && values.paidAmount > 0 && values.pendingAmount >= values.paidAmount && values.paidDate) {
             npa = Number(values.pendingAmount) - Number(values.paidAmount);
 
             val.push({ Date: values.paidDate, PaidAmount: values.paidAmount, fullpaymentDone: false })
@@ -179,6 +185,10 @@ const Card = ({ formData }) => {
         }
     }
 
+    const checkBoxHandlerforDollar = () => {
+        setDollars(document.getElementById("dollarpaidAmtcheckbox").checked);
+    }
+
     const checkBoxHandler = () => {
         let fpd = document.getElementById("fullpaymentDoneCheckBox").checked
         let bpd = document.getElementById("brokerpaymentDoneCheckBox").checked
@@ -225,6 +235,19 @@ const Card = ({ formData }) => {
     }, [values.price, values.lessPercentage, values.netWeight])
 
     useEffect(() => {
+        if (dollars) {
+            let dollartorupee = dollarsAmt * rate;
+            handleChange([{ name: "paidAmount", value: parseFloat(dollartorupee.toFixed(2)) }]);
+        }
+    }, [dollarsAmt, rate])
+
+    useEffect(() => {
+        handleChange([{ name: "paidAmount", value: "" }]);
+        setDollarsAmt("");
+        setRate("");
+    }, [dollars, ViewEdit])
+
+    useEffect(() => {
         if (values.totalAmount > 0 && values.brokerage > 0) {
             const ba = (values.totalAmount * values.brokerage) / 100;
             handleChange([{ name: "brokerageAmt", value: parseFloat(ba.toFixed(2)) }]);
@@ -232,6 +255,13 @@ const Card = ({ formData }) => {
             handleChange([{ name: "brokerageAmt", value: "" }]);
         }
     }, [values.totalAmount, values.brokerage])
+
+    function formatDate(inputDate) {
+        const parts = inputDate.split('-');
+        const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        console.log(formattedDate);
+        return formattedDate;
+    }
 
     return (
         <div>
@@ -309,7 +339,7 @@ const Card = ({ formData }) => {
                                     onChange={handleChange}
                                 />
                                 :
-                                <h1 className="font-semibold text-xs sm:text-base">{formData.sellingDate}</h1>
+                                <h1 className="font-semibold text-xs sm:text-base">{formatDate(formData.sellingDate)}</h1>
                         }
                     </div>
                     <div className="flex flex-col lg:flex-row w-2/6 md:w-1/3 gap-x-2 text-center items-center">
@@ -320,12 +350,12 @@ const Card = ({ formData }) => {
                                     className="text-xs sm:text-base px-1 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
                                     type="date"
                                     name="dueDate"
-                                    value={values.dueDate}
+                                    value={formatDate(values.dueDate)}
                                     min={values.sellingDate}
                                     onChange={handleChange}
                                 />
                                 :
-                                <h1 className="font-semibold text-xs sm:text-base">{formData.dueDate}</h1>
+                                <h1 className="font-semibold text-xs sm:text-base">{formatDate(formData.dueDate)}</h1>
                         }
                     </div>
                     <div className="flex flex-col lg:flex-row w-2/6 md:w-1/3 gap-x-2 text-center items-center">
@@ -535,16 +565,65 @@ const Card = ({ formData }) => {
                                     <h1 className="text-gray-600 text-xs sm:text-base">₹</h1>
                                 </div>
                             </div>
-                            <div className="flex gap-x-2 justify-between items-center">
+
+                            <div className="flex gap-x-2 items-center">
+                                <input
+                                    className="px-3 py-1 rounded-md focus:outline-none"
+                                    id="dollarpaidAmtcheckbox"
+                                    type="checkbox"
+                                    name="dollarpaidAmtcheckbox"
+                                    value={dollars}
+                                    checked={dollars}
+                                    onChange={checkBoxHandlerforDollar}
+                                />
+                                <h1 className="text-gray-600 text-xs sm:text-base">Payment in Dollars</h1>
+                            </div>
+
+                            {
+                                dollars &&
+                                <div className="flex gap-x-4 sm:gap-x-10 lg:gap-x-20 justify-between items-center">
+                                    <div className="flex flex-col lg:flex-row w-1/2 text-center gap-x-2 items-center">
+                                        <h1 className="text-gray-600 text-xs sm:text-base">Dollars:</h1>
+                                        <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
+                                            <input
+                                                className="text-xs sm:text-base px-2 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
+                                                type="number"
+                                                name="Dollars"
+                                                value={dollarsAmt}
+                                                onChange={(e) => setDollarsAmt(e.target.value)}
+                                                placeholder="Dollars"
+                                            />
+                                            <h1 className="text-gray-600 text-xs sm:text-base">$</h1>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col lg:flex-row w-1/2 text-center gap-x-2 items-center">
+                                        <h1 className="text-gray-600 text-xs sm:text-base">Rate:</h1>
+                                        <div className="flex gap-x-1 w-full md:gap-x-2 items-center justify-center">
+                                            <input
+                                                className="text-xs sm:text-base px-2 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
+                                                type="number"
+                                                name="Rate"
+                                                value={rate}
+                                                onChange={(e) => setRate(e.target.value)}
+                                                placeholder="Rupees"
+                                            />
+                                            <h1 className="text-gray-600 text-xs sm:text-base">₹</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div className="flex gap-x-4 sm:gap-x-10 lg:gap-x-20 justify-between items-center">
                                 <div className="flex flex-col lg:flex-row gap-x-2 w-1/2 items-center justify-center">
                                     <h1 className="text-gray-600 text-xs sm:text-base">Paid Amount:</h1>
-                                    <div className="flex gap-x-2 items-center justify-center">
+                                    <div className="flex gap-x-2 items-center justify-center w-4/6 sm:w-full">
                                         <input
-                                            className="text-xs sm:text-base px-1 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
+                                            className="text-xs sm:text-base px-1 py-1 md:px-3 md:py-1 w-5/6 sm:w-full rounded-md focus:outline-none"
                                             type="number"
                                             name="paidAmount"
                                             value={values.paidAmount}
                                             onChange={handleChange}
+                                            disabled={dollars}
                                         />
                                         <h1 className="text-gray-600 text-xs sm:text-base">₹</h1>
                                     </div>
