@@ -65,8 +65,7 @@ const InputCard = ({ setInputCard }) => {
 
                 if (response?.status === 200 && response?.data?.message && response?.data?.counter) {
                     alert(response?.data?.message);
-                    const newCard = { ...updatedCard, counter: response?.data?.counter }
-                    dispatch(logIn({ ...user, cards: [newCard, ...user.cards] }));
+                    dispatch(logIn({ ...user, cards: response?.data?.data }));
                     setInputCard(false);
                 } else {
                     alert(response?.data?.error);

@@ -20,7 +20,6 @@ const Card = ({ formData }) => {
     const [dollarsAmt, setDollarsAmt] = useState("");
     const [rate, setRate] = useState("");
 
-    
     const { values, handleChange } = useUpdate({
         seller: formData.seller,
         buyer: formData.buyer,
@@ -67,10 +66,10 @@ const Card = ({ formData }) => {
             { name: 'paymentRemarks', value: formData.paymentRemarks },
             { name: 'fullpaymentDone', value: formData.fullpaymentDone },
             { name: 'brokerpaymentDone', value: formData.brokerpaymentDone },
+            { name: 'counter', value: formData.counter },
         ]);
     }
     const CancelEdit = () => {
-        // initializeState();
         setViewEdit(false);
     };
     const openEdit = () => {
@@ -117,7 +116,6 @@ const Card = ({ formData }) => {
                 pendingAmount: values.fullpaymentDone === true ? 0 : npa !== undefined ? npa.toFixed(2) : values.pendingAmount,
                 paidAmount: ""
             };
-
             const data = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/updatecard`, {
                 userid: user._id,
                 cardid: formData._id,
