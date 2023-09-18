@@ -4,9 +4,11 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Months from "@/components/Months";
 import SortButtonWraper from "@/components/SortButtonWraper";
 import { logIn } from "@/redux/features/authSlice";
+import { generatePDF } from "@/utils/GeneratePdf";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FaDownload } from 'react-icons/fa';
 
 export default function Home() {
   const [viewOption, setviewOption] = useState("month");
@@ -21,6 +23,16 @@ export default function Home() {
 
   const [selectedMonth, setSelectedMonth] = useState();
   const [selectedMessage, setSelectedMessage] = useState("");
+
+  const generatePdf = () => {
+    const printCards = sortedCards
+      .filter(item => {
+        const sellingDate = new Date(item.sellingDate);
+        const cardMonth = sellingDate.getMonth();
+        return viewOption === "all" || cardMonth === selectedMonth;
+      })
+    generatePDF({ cards: printCards, selectedMonth, viewOption });
+  }
 
   useEffect(() => {
     setSelectedMonth(new Date().getMonth());
@@ -61,18 +73,18 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if(user && user._id){
-      if(user.cards && user.cards.length>0){
-        if(areCardsAvailableForMonth(user.cards, selectedMonth) === true){
+    if (user && user._id) {
+      if (user.cards && user.cards.length > 0) {
+        if (areCardsAvailableForMonth(user.cards, selectedMonth) === true) {
           setSelectedMessage("");
         }
         else
           setSelectedMessage("No cards available.");
       }
-      else 
+      else
         setSelectedMessage("Add Cards.");
     }
-    else{
+    else {
       setSelectedMessage("You have to Login First.");
     }
 
@@ -135,15 +147,22 @@ export default function Home() {
         <SortButtonWraper sortOption={sortOption} setSortOption={setSortOption} sortOrder={sortOrder} setSortOrder={setSortOrder} />
       </div>
 
-
       <div className="w-[85%] mx-auto">
-        {
-          viewOption === "month" ?
+      </div>
+
+      {(areCardsAvailableForMonth(user.cards, selectedMonth) === true || viewOption=="all") &&
+        <div className=" flex items-center justify-between w-[85%] mx-auto">
+          <button onClick={generatePdf} className=" bg-dul hover:bg-blue border-2 border-blue hover:text-dul text-blue rounded-lg px-10 py-2" >
+            <FaDownload className="sm:w-4 h-3 sm:h-4 font-heading text-xs sm:text-base text-center opacity-70" />
+          </button>
+
+          {viewOption === "month" ?
             <p className="font-heading float-right text-xs sm:text-base">Monthly brokerage: <span className="font-extrabold sm:tracking-wider text-red-700">{monthlyBrokrage}</span> ₹</p>
             :
             <p className="font-heading float-right text-xs sm:text-base">Yearly brokerage: <span className="font-extrabold sm:tracking-wider text-red-700">{monthlyBrokrage}</span> ₹</p>
-        }
-      </div>
+          }
+        </div>
+      }
 
       <div className="grid gap-y-4 md:gap-y-8 w-[90%] sm:w-[85%] mx-auto mb-10 sm:mb-20">
         {isLoading ? (
@@ -173,6 +192,6 @@ export default function Home() {
 
       </div>
 
-    </main>
+    </main >
   )
 }

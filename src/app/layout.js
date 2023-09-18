@@ -29,8 +29,8 @@ export default function RootLayout({ children }) {
               </div>
                 : <></>
             }
-            <div className="fixed top-[90%] left-[83%] sm:top-[87%] sm:left-[87%] shadow-xl z-50 rounded-[40%] px-4 py-2 lg:px-5 lg:py-3 bg-blue cursor-pointer" onClick={() => setInputCard(!inputCard)}>
-              <h1 className="text-xl md:text-3xl font-bold text-common">+</h1>
+            <div className="fixed top-[90%] left-[83%] sm:top-[87%] sm:left-[87%] shadow-xl z-50 rounded-[40%] px-5 py-3 bg-blue cursor-pointer" onClick={() => setInputCard(!inputCard)}>
+              <h1 className="text-2xl md:text-3xl font-bold text-common">+</h1>
             </div>
 
             <div id='content' className='flex flex-col w-full mx-auto h-[100vh]'>

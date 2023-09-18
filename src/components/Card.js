@@ -16,11 +16,11 @@ const Card = ({ formData }) => {
     const [ViewEdit, setViewEdit] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-
     const [dollars, setDollars] = useState(false);
     const [dollarsAmt, setDollarsAmt] = useState("");
     const [rate, setRate] = useState("");
 
+    
     const { values, handleChange } = useUpdate({
         seller: formData.seller,
         buyer: formData.buyer,
@@ -259,7 +259,6 @@ const Card = ({ formData }) => {
     function formatDate(inputDate) {
         const parts = inputDate.split('-');
         const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-        console.log(formattedDate);
         return formattedDate;
     }
 
@@ -350,7 +349,7 @@ const Card = ({ formData }) => {
                                     className="text-xs sm:text-base px-1 py-1 md:px-3 md:py-1 w-4/6 sm:w-full rounded-md focus:outline-none"
                                     type="date"
                                     name="dueDate"
-                                    value={formatDate(values.dueDate)}
+                                    value={values.dueDate}
                                     min={values.sellingDate}
                                     onChange={handleChange}
                                 />

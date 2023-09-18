@@ -20,8 +20,8 @@ const Navbar = () => {
   return (
     <div className="flex shadow-lg flex-row justify-between mb-6 sm:mb-6 sm:mt-6 mx-auto py-4 px-5 lg:py-7 lg:px-20 md:py-5 md:px-10 bg-brown items-center sm:rounded-t-xl w-full">
       <div className="flex">
-        <Link href="/" className="cursor-pointer font-bold tracking-wide hover:scale-105 duration-150 text-2xl sm:text-3xl lg:text-5xl md:text-4xl font-300 sm:tracking-wide text-blue font-rare">
-          Broker Diary
+        <Link href="/" className="cursor-pointer font-bold hover:scale-105 duration-150 text-2xl sm:text-3xl lg:text-5xl md:text-4xl font-300 sm:tracking-wider text-common font-rare">
+          <h1 className=" drop-shadow-lg">Broker Diary</h1>
         </Link>
       </div>
 
