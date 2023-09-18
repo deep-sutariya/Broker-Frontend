@@ -19,12 +19,12 @@ export const generatePDF = ({ cards, selectedMonth, viewOption }) => {
     const year = new Date().getFullYear().toString();
     const month = months[selectedMonth];
     
-    let heading = "DataOf : ", curDate = `Download Time :  ${new Date().toDateString()}`;
+    let heading = "", curDate = `Download Time : ${new Date().toLocaleString()}`;
     viewOption==="all" ? heading+=year : heading+=month+"-"+year;
 
     var textWidth = pdf.getStringUnitWidth(heading) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
     var textOffset = (pdf.internal.pageSize.width - textWidth) / 3;
-    pdf.text(textOffset, 10, heading + "  " + curDate);
+    pdf.text(textOffset, 10, "DataOf : " + heading + "  " + curDate);
 
     for (let page = 0; page < numPages; page++) {
         if (page > 0) {
